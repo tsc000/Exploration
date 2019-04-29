@@ -8,7 +8,7 @@
 ## 一、KVC 定义
 &#160;&#160;&#160;&#160;&#160;&#160;&#160;`KVC`全称`Key Value Coding`，具体来说就是`KVC`是由`NSKeyValueCoding`非正式协议启用的机制，对象采用该机制提供对其属性的间接访问。当对象符合键值编码时(通常在OC中，继承`NSObject`即可)，其属性可通过字符串参数通过简洁，统一的消息传递接口来存取消息。它属于间接访问对象的属性，区别于属性的直接访问方法`setter`和`getter`，亦或直接访问成员变量.因为是间接访问属性，所以`KVC`性能比不上直接存取属性的方法，但是可以提高程序的灵活性。必要的时候可以减少冗余代码。相关参考[KVC官方文档](https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/KeyValueCoding/BasicPrinciples.html#//apple_ref/doc/uid/20002170-BAJEAIEE)
 
-##二、NSKeyValueCoding
+## 二、NSKeyValueCoding
 ![图片.png](https://upload-images.jianshu.io/upload_images/1846524-3e957ef0119543c8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/650)
 ##三、基本操作
 `KVC`对属性的操作主要分为：
@@ -124,7 +124,7 @@ NSSet *collectedSetPayees = [set valueForKeyPath:@"@distinctUnionOfSets.payee"];
 - `mutableOrderedSetValueForKey:` and `mutableOrderedSetValueForKeyPath:`返回一个可变的有序的Set对象进行操作(像NSMutableOrderedSet)
 
 注： 非对象属性通过KVC设置值，如果值nil，会调用`setNilValueForKey:`,其内部触发一个异常，可以根据需要重写它来进行其它操作
-##四、非对象类型的表示
+## 四、非对象类型的表示
 KVC支持scalar和结构体，对于KVC中的value,必须是一个对象类型，所以scalar和结构体必须包裹成相应的对象。
 - **scalar类型可以使用NSNumber或者简写@()**
 ```
@@ -161,7 +161,7 @@ result = [myClass valueForKey:@"threeFloats"];
 NSLog(@"修改前x-%f,y-%f,z-%f", temp.x, temp.y, temp.z);
 ```
 
-##五、属性的验证
+## 五、属性的验证
 Key-value coding protocol支持属性验证，但是不会自动地调用验证方法(如果自动调用肯定会消耗性能)，必须根据自己的需求在合适的时机调用 `validateValue:forKey:error:`。但是默认的方法始终返回Yes,所以无法验证，必须写一个`validate<Key>:error:`方法也实现具体的验证思路。
 
 - **如果不写`validate<Key>:error:`方法，下面的验证无效**
@@ -201,7 +201,7 @@ NSLog(@"%@",error);
 验证结果：
 `2019-04-29 01:41:08.969260+0800 KVC[6294:243510] Error Domain=0 Code=100 "(null)" UserInfo={info=type error}`
 
-##六、基本Getter方法的搜索模式
+## 六、基本Getter方法的搜索模式
 NSObject提供的NSKeyValueCoding协议的默认实现使用明确定义的一套规则将基于`Key`的访问器的调用映射到对象的内部属性。也就是说内部有自己的一套访问存取方法，实例变量和其它的一些相关方法。
 这是valueForKey:的默认实现，给定一个key当做输入参数，开始下面的步骤，在这个接收valueForKey:方法调用的类内部进行操作。
 
@@ -218,7 +218,7 @@ NSObject提供的NSKeyValueCoding协议的默认实现使用明确定义的一�
 **搜索路径如下图：**
 ![搜索路径.png](https://upload-images.jianshu.io/upload_images/1846524-ba6990d6dc9909ee.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-##六、基本Setter搜索模式
+## 七、基本Setter搜索模式
 这是`setValue:forKey:`的默认实现，根据给定的`key`设置相应的`value`
 
 - 查找`set<Key>:`或`_set<Key>`命名的setter，按照这个顺序，如果找到的话，调用这个方法并将值传进去(根据需要进行对象转换)。
@@ -226,7 +226,7 @@ NSObject提供的NSKeyValueCoding协议的默认实现使用明确定义的一�
 如果没有发现setter或实例变量，则调用`setValue:forUndefinedKey:`方法，并默认抛出一个异常，子类可以重写，指定自己的行为
 **搜索路径如下图：**
 ![图片.png](https://upload-images.jianshu.io/upload_images/1846524-b5a1f1925081b096.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-##六、可变数组搜索模式
+## 八、可变数组搜索模式
 `mutableArrayValueForKey:`根据给定的`key`返回一个可变的`value`（可变数组）
 **`mutableArrayValueForKey:`内部调用顺序如下：**
 
@@ -239,16 +239,16 @@ NSObject提供的NSKeyValueCoding协议的默认实现使用明确定义的一�
 
 **搜索路径如下图：**
 ![图片.png](https://upload-images.jianshu.io/upload_images/1846524-eb495c2393646af6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-##7、可变有序Set搜索模式
+## 九、可变有序Set搜索模式
 `mutableOrderedSetValueForKey:`根据给定的`key`返回一个可变的`value`（有序可变Set）
 其实现流程和可变数组大致一致，不再赘述，可看[demo](https://github.com/tsc000/KVC)
-##8、可变Set搜索模式
+## 十、可变Set搜索模式
 `mutableSetValueForKey:`,根据给定的`key`返回一个可变的`value`（可变Set）
 其实现流程和可变数组大致一致，这里只给一个流程图，具体可查看demo
 
 ![图片.png](https://upload-images.jianshu.io/upload_images/1846524-375dff5368509b84.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-##9、KVC其它操作
+## 十一、KVC其它操作
 
 - Key Paths
 OC中的`key paths` 必须是一个字符串，字样就会造成一定的写错机率，
