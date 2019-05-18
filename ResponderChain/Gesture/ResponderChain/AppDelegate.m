@@ -1,13 +1,14 @@
 //
 //  AppDelegate.m
-//  KVO
+//  ResponderChain
 //
-//  Created by Honey on 2019/5/7.
+//  Created by Honey on 2019/4/25.
 //  Copyright © 2019 Honey. All rights reserved.
 //
 
 #import "AppDelegate.h"
-#import <UIKit/UIApplication.h>
+#import "Window.h"
+#import "ViewController.h"
 
 @interface AppDelegate ()
 
@@ -15,10 +16,20 @@
 
 @implementation AppDelegate
 
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    NSLog(@"Delegate");
+}
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
 
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ViewController *jVC = [storyboard instantiateInitialViewController];
+
+    Window *window = [[Window alloc] initWithFrame:UIScreen.mainScreen.bounds];
+    self.window = window;
+    self.window.rootViewController = jVC;
+    [self.window makeKeyAndVisible];
     return YES;
 }
 

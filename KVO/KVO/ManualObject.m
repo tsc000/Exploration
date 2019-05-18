@@ -16,6 +16,7 @@
     _balance = balance;
     _itemChanged ++;
     [self didChangeValueForKey:@"itemChanged"];
+    
 }
 
 //禁用balance和itemChanged的通知但是可以手动触发
